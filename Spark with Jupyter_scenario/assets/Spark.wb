@@ -108,4 +108,4 @@ image build --basedir image/centos --imgversion 1.0 --os centos7
 
 catalog save --filepath staging/spark221e1.json --force
 sources package
-catalog package --os=centos
+catalog package
