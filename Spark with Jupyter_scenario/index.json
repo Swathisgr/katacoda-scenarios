@@ -26,8 +26,8 @@
                   
                  {"file": "Logo_Spark.png", "target": "/root/test" },
 				
-		              {"file": "Spark.wb", "target": "/root/test",  "chmod": "+x"},
-				                 ] 
+		              {"file": "Spark.wb", "target": "/root/test",  "chmod": "+x" }
+                 ] 
     }
   },
   "environment": {
