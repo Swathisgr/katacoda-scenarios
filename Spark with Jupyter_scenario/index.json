@@ -23,10 +23,10 @@
        "host01": [
 				 
                  {"file": "Dockerfile", "target": "/root/test"},
-                  
+	        {"file": "configure_java8.sh", "target": "/root/test" },
+		{"file": "configure_jupyter.sh", "target": "/root/test" },
                  {"file": "Logo_Spark.png", "target": "/root/test" },
-				
-		              {"file": "Spark.wb", "target": "/root/test",  "chmod": "+x" }
+		{"file": "Spark.wb", "target": "/root/test",  "chmod": "+x" }
                  ] 
     }
   },
