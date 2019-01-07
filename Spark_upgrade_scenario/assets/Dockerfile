@@ -22,11 +22,15 @@ RUN yum install -y expect mysql-server mysql-connector-java             \
 
 RUN sudo yum -y install https://centos7.iuscommunity.org/ius-release.rpm
 
-
 #wget Ananconda parcels
 
 RUN wget -q https://s3-us-west-2.amazonaws.com/bluedata-ds-bits/Anaconda3-5.1.0-Linux-x86_64.sh -P /root/
 RUN chmod +x /root/Anaconda3-5.1.0-Linux-x86_64.sh && /root/Anaconda3-5.1.0-Linux-x86_64.sh -b -p /opt/anaconda3 && rm -f /root/Anaconda3-5.1.0-Linux-x86_64.sh
+
+RUN yum install -y gcc-c++ make && \
+    curl -sL https://rpm.nodesource.com/setup_6.x | sudo -E bash - && \
+    sudo yum install -y nodejs && \
+    sudo npm install -g configurable-http-proxy
 
 RUN  sudo -s && \
     /opt/anaconda3/bin/conda create -n default-notebook ipykernel -y && \
@@ -35,6 +39,24 @@ RUN  sudo -s && \
     source /opt/anaconda3/bin/deactivate && \
     exit
 
+RUN sudo groupadd jupyterhub && sudo useradd -G jupyterhub jupyter
+
+#Install git
+RUN sudo yum -y install git
+
+#Install Jupyterhub
+RUN sudo /opt/anaconda3/bin/pip install git+https://github.com/jupyter/sudospawner
+
+RUN sudo groupadd shadow && \
+    sudo chgrp shadow /etc/shadow && \
+    sudo chmod g+r /etc/shadow && \
+    sudo usermod -a -G shadow jupyter && \
+    sudo setcap 'cap_net_bind_service=+ep' /usr/bin/node
+
+RUN sudo mkdir /etc/jupyterhub && \
+    cd /etc/jupyterhub && \
+    sudo chown jupyter /etc/jupyterhub && \
+    sudo -u jupyter /opt/anaconda3/bin/jupyterhub --generate-config
 
 ## Download and extract spark
 RUN mkdir /usr/lib/spark; curl -s http://archive.apache.org/dist/spark/spark-2.3.1/spark-2.3.1-bin-hadoop2.7.tgz | tar xz -C /usr/lib/spark/
@@ -54,6 +76,10 @@ RUN sudo /opt/anaconda3/bin/conda install -c conda-forge -y pyzmq
 ## Download and extract mysql connector
 RUN mkdir -p /opt/bluedata; curl -s https://s3.amazonaws.com/bluedata-catalog/thirdparty/spark/mysql-connector-java-5.1.36.tar.gz | tar xz -C /opt/bluedata/; mv /opt/bluedata/mysql-connector-java-5.1.36/*.jar /opt/bluedata/mysql-connector.jar; rm -rf /opt/bluedata/mysql-connector-java-5.1.36
 
+## Download thirdparty aws jars
+RUN wget -q https://s3.amazonaws.com/bluedata-catalog/thirdparty/aws-jars/aws-java-sdk-1.7.4.jar -P /opt/bluedata/
+RUN wget -q https://s3.amazonaws.com/bluedata-catalog/thirdparty/aws-jars/hadoop-aws-2.7.1.jar -P /opt/bluedata/
+
 ## Create spark-event dir and give permissions
 RUN mkdir /tmp/spark-events
 RUN chmod -R 777 /tmp/spark-events/
@@ -64,4 +90,14 @@ RUN touch /usr/lib/spark/spark-2.3.1-bin-hadoop2.7/logs/Bluedata-spark-logs
 RUN chmod -R 1777 /usr/lib/spark/spark-2.3.1-bin-hadoop2.7/logs/
 RUN mkdir -p /usr/lib/spark/spark-2.3.1-bin-hadoop2.7/warehouse
 RUN chmod -R 1777 /usr/lib/spark/spark-2.3.1-bin-hadoop2.7/warehouse/
+
+
+# make spark bin dir accessible to all
+RUN echo "export PATH=$PATH:/usr/lib/spark/spark-2.3.1-bin-hadoop2.7/bin/" > /etc/profile.d/updatePath.sh
+RUN echo "export PATH=$PATH:/opt/anaconda3/bin/" > /etc/profile.d/updatePath.sh
+RUN /opt/anaconda3/bin/conda update -y --all
+RUN /opt/anaconda3/bin/conda install -y tornado=4.5.3
+RUN /opt/anaconda3/bin/conda install -y ipykernel
+RUN /opt/anaconda3/bin/pip install py4j
+
 
