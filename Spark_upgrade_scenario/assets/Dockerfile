@@ -44,19 +44,6 @@ RUN sudo groupadd jupyterhub && sudo useradd -G jupyterhub jupyter
 #Install git
 RUN sudo yum -y install git
 
-#Install Jupyterhub
-RUN sudo /opt/anaconda3/bin/pip install git+https://github.com/jupyter/sudospawner
-
-RUN sudo groupadd shadow && \
-    sudo chgrp shadow /etc/shadow && \
-    sudo chmod g+r /etc/shadow && \
-    sudo usermod -a -G shadow jupyter && \
-    sudo setcap 'cap_net_bind_service=+ep' /usr/bin/node
-
-RUN sudo mkdir /etc/jupyterhub && \
-    cd /etc/jupyterhub && \
-    sudo chown jupyter /etc/jupyterhub && \
-    sudo -u jupyter /opt/anaconda3/bin/jupyterhub --generate-config
 
 ## Download and extract spark
 RUN mkdir /usr/lib/spark; curl -s http://archive.apache.org/dist/spark/spark-2.3.1/spark-2.3.1-bin-hadoop2.7.tgz | tar xz -C /usr/lib/spark/
