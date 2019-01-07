@@ -23,7 +23,6 @@ RUN yum install -y expect mysql-server mysql-connector-java             \
 RUN sudo yum -y install https://centos7.iuscommunity.org/ius-release.rpm
 
 #wget Ananconda parcels
-
 RUN wget -q https://s3-us-west-2.amazonaws.com/bluedata-ds-bits/Anaconda3-5.1.0-Linux-x86_64.sh -P /root/
 RUN chmod +x /root/Anaconda3-5.1.0-Linux-x86_64.sh && /root/Anaconda3-5.1.0-Linux-x86_64.sh -b -p /opt/anaconda3 && rm -f /root/Anaconda3-5.1.0-Linux-x86_64.sh
 
