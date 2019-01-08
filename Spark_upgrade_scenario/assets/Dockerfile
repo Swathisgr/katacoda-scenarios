@@ -22,9 +22,10 @@ RUN yum install -y bzip2
 
 RUN sudo yum -y install https://centos7.iuscommunity.org/ius-release.rpm
 
-## wget Ananconda parcels
-RUN wget -q https://s3-us-west-2.amazonaws.com/bluedata-ds-bits/Anaconda3-5.1.0-Linux-x86_64.sh -P /root/
-RUN chmod +x /root/Anaconda3-5.1.0-Linux-x86_64.sh && /root/Anaconda3-5.1.0-Linux-x86_64.sh -b -p /opt/anaconda3 && rm -f /root/Anaconda3-5.1.0-Linux-x86_64.sh
+#wget Ananconda parcels (totally optional for additional packages like numpy, scipy etc.,)
+
+RUN wget -q https://repo.continuum.io/archive/Anaconda3-5.2.0-Linux-x86_64.sh -P /root/
+RUN chmod +x /root/Anaconda3-5.2.0-Linux-x86_64.sh && /root/Anaconda3-5.2.0-Linux-x86_64.sh -b -p /opt/anaconda3 && rm -f /root/Anaconda3-5.2.0-Linux-x86_64.sh
 
 ## Download and extract spark
 RUN mkdir /usr/lib/spark; curl -s http://archive.apache.org/dist/spark/spark-2.3.1/spark-2.3.1-bin-hadoop2.7.tgz | tar xz -C /usr/lib/spark/
