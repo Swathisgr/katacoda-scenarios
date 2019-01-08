@@ -26,11 +26,6 @@ RUN sudo yum -y install https://centos7.iuscommunity.org/ius-release.rpm
 RUN wget -q https://s3-us-west-2.amazonaws.com/bluedata-ds-bits/Anaconda3-5.1.0-Linux-x86_64.sh -P /root/
 RUN chmod +x /root/Anaconda3-5.1.0-Linux-x86_64.sh && /root/Anaconda3-5.1.0-Linux-x86_64.sh -b -p /opt/anaconda3 && rm -f /root/Anaconda3-5.1.0-Linux-x86_64.sh
 
-RUN yum install -y gcc-c++ make && \
-    curl -sL https://rpm.nodesource.com/setup_6.x | sudo -E bash - && \
-    sudo yum install -y nodejs && \
-    sudo npm install -g configurable-http-proxy
-
 RUN  sudo -s && \
     /opt/anaconda3/bin/conda create -n default-notebook ipykernel -y && \
     source /opt/anaconda3/bin/activate default-notebook && \
@@ -59,9 +54,6 @@ RUN chmod +x /root/configure_jupyter.sh && /root/configure_jupyter.sh && rm -f /
 
 RUN sudo /opt/anaconda3/bin/conda install -c conda-forge -y pyzmq
 
-## Download and extract mysql connector
-RUN mkdir -p /opt/bluedata; curl -s https://s3.amazonaws.com/bluedata-catalog/thirdparty/spark/mysql-connector-java-5.1.36.tar.gz | tar xz -C /opt/bluedata/; mv /opt/bluedata/mysql-connector-java-5.1.36/*.jar /opt/bluedata/mysql-connector.jar; rm -rf /opt/bluedata/mysql-connector-java-5.1.36
-
 ## Download thirdparty aws jars
 RUN wget -q https://s3.amazonaws.com/bluedata-catalog/thirdparty/aws-jars/aws-java-sdk-1.7.4.jar -P /opt/bluedata/
 RUN wget -q https://s3.amazonaws.com/bluedata-catalog/thirdparty/aws-jars/hadoop-aws-2.7.1.jar -P /opt/bluedata/
@@ -80,10 +72,3 @@ RUN chmod -R 1777 /usr/lib/spark/spark-2.3.1-bin-hadoop2.7/warehouse/
 
 # make spark bin dir accessible to all
 RUN echo "export PATH=$PATH:/usr/lib/spark/spark-2.3.1-bin-hadoop2.7/bin/" > /etc/profile.d/updatePath.sh
-RUN echo "export PATH=$PATH:/opt/anaconda3/bin/" > /etc/profile.d/updatePath.sh
-RUN /opt/anaconda3/bin/conda update -y --all
-RUN /opt/anaconda3/bin/conda install -y tornado=4.5.3
-RUN /opt/anaconda3/bin/conda install -y ipykernel
-RUN /opt/anaconda3/bin/pip install py4j
-
-
