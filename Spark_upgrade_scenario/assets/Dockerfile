@@ -17,27 +17,14 @@ RUN echo 1 | update-alternatives --config java
 # Install EPEL repo
 RUN yum install -y bzip2
 
-RUN yum install -y expect mysql-server mysql-connector-java             \
-                   php-5.3.3 php-xml php-pear php-gd R R-devel libcurl-devel openssl-devel libxml2-devel
+# RUN yum install -y expect mysql-server mysql-connector-java             \
+#                   php-5.3.3 php-xml php-pear php-gd R R-devel libcurl-devel openssl-devel libxml2-devel
 
 RUN sudo yum -y install https://centos7.iuscommunity.org/ius-release.rpm
 
-#wget Ananconda parcels
+## wget Ananconda parcels
 RUN wget -q https://s3-us-west-2.amazonaws.com/bluedata-ds-bits/Anaconda3-5.1.0-Linux-x86_64.sh -P /root/
 RUN chmod +x /root/Anaconda3-5.1.0-Linux-x86_64.sh && /root/Anaconda3-5.1.0-Linux-x86_64.sh -b -p /opt/anaconda3 && rm -f /root/Anaconda3-5.1.0-Linux-x86_64.sh
-
-RUN  sudo -s && \
-    /opt/anaconda3/bin/conda create -n default-notebook ipykernel -y && \
-    source /opt/anaconda3/bin/activate default-notebook && \
-    /opt/anaconda3/bin/python -m ipykernel install && \
-    source /opt/anaconda3/bin/deactivate && \
-    exit
-
-RUN sudo groupadd jupyterhub && sudo useradd -G jupyterhub jupyter
-
-#Install git
-RUN sudo yum -y install git
-
 
 ## Download and extract spark
 RUN mkdir /usr/lib/spark; curl -s http://archive.apache.org/dist/spark/spark-2.3.1/spark-2.3.1-bin-hadoop2.7.tgz | tar xz -C /usr/lib/spark/
