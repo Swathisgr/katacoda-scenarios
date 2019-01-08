@@ -40,7 +40,7 @@ RUN mkdir -p /root/.ipython/kernels/pyspark
 ADD configure_jupyter.sh /root/configure_jupyter.sh
 RUN chmod +x /root/configure_jupyter.sh && /root/configure_jupyter.sh && rm -f /root/configure_jupyter.sh
 
-RUN sudo /opt/anaconda3/bin/conda install -c conda-forge -y pyzmq
+#RUN sudo /opt/anaconda3/bin/conda install -c conda-forge -y pyzmq
 
 ## Download thirdparty aws jars
 RUN wget -q https://s3.amazonaws.com/bluedata-catalog/thirdparty/aws-jars/aws-java-sdk-1.7.4.jar -P /opt/bluedata/
